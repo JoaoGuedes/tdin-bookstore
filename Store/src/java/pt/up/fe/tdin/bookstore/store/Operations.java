@@ -102,7 +102,6 @@ public class Operations {
             MessageProducer messageProducer = session.createProducer(queue);
             TextMessage message = session.createTextMessage();
             message.setText(messageToSend);
-            System.out.println( "It come from Servlet:"+ message.getText());
             messageProducer.send(message);
 
             //message sent , it was all
