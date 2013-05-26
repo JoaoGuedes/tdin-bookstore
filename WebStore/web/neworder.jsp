@@ -26,14 +26,14 @@
 	MyWebService_Service service = new MyWebService_Service();
 	MyWebService port = service.getMyWebServicePort();
 	 // TODO initialize WS operation arguments here
-	java.lang.String title = request.getParameter("title");
+	int bookId = Integer.parseInt(request.getParameter("bookId"));
 	int quantity = Integer.parseInt(request.getParameter("quantity"));
 	java.lang.String name = request.getParameter("name");
 	java.lang.String address = request.getParameter("address");
 	java.lang.String email = request.getParameter("email");
         
 	// TODO process result here
-	java.lang.Boolean result = port.placeOrder(title, quantity, name, address, email);
+	java.lang.Boolean result = port.placeOrder(bookId, quantity, name, address, email);
 	
         if (result) {
             %>

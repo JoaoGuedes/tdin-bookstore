@@ -4,9 +4,13 @@
  */
 package pt.up.fe.tdin.bookstore.store;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.Singleton;
 import javax.ejb.LocalBean;
 import javax.ejb.Startup;
@@ -15,9 +19,14 @@ import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-
+import javax.naming.NamingException;
 /**
  *
  * @author joaoguedes
@@ -26,6 +35,10 @@ import javax.naming.InitialContext;
 @Startup
 @LocalBean
 public class Operations {
+    @Resource(name = "mail/myMail")
+    private javax.mail.Session mailmyMail1;
+    @Resource(name = "mail/myMail")
+    private javax.mail.Session mailmyMail;
 
  /**
      * List of placed orders
@@ -37,6 +50,9 @@ public class Operations {
        populateBookList();
     }
     
+    /***
+     * List of placed orders
+     */
     private List<Order> orders;
     
     /**
@@ -64,6 +80,15 @@ public class Operations {
         System.out.println("[getBookList()] called");
         return bookList;
     }
+    
+    public Book getBook(int id) {
+        for (Book b : bookList) {
+            if (b.getId() == id)
+                return b;
+        }        
+        return null;
+    }
+    
 
     /**
      * Places a new order on the system
@@ -74,19 +99,51 @@ public class Operations {
      * @param email client's email
      * @return true on successful order
      */
-    public Boolean placeOrder(String title, int quantity, String name, String address, String email) {
+    public Boolean placeOrder(int bookId, int quantity, String name, String address, String email) {
         
         //Debug
-        System.out.format("New order: %s, %d, %s, %s, %s.", title, quantity, name, address, email);
+        System.out.format("New order: "
+                + "\n Book id: %d"
+                + "\n Quantity: %d"
+                + "\n Client's name: %s"
+                + "\n Client's address: %s"
+                + "\n Client's email: %s.", bookId, quantity, name, address, email);
         
+        Book myBook = getBook(bookId);
+        int stockLeft = myBook.getAvailability() - quantity;
+        if (stockLeft < 0) {
+            //TODO: place order on Warehouse
+            return false;
+        }       
+        myBook.setAvailability(stockLeft);
+        
+        Order newOrder = new Order(bookId, quantity, name, address, email);
+        newOrder.setOrderState("DISPATCHED");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(Calendar.DAY_OF_YEAR, 1);
+        newOrder.setOrderDeliveryDate(cal.getTime());
+        try {
+        String message = "Hi " + name + ",\n"
+                + "Your order of " + myBook.getTitle() + " is scheduled to be delivered by " 
+                + new SimpleDateFormat("EEE, dd MMM").format(newOrder.getOrderDeliveryDate());
+        sendMail(email, "Bookstore order", message);
+        } catch (Exception e) {}
         sendWarehouse("Faz de conta que isto é um livro!");
 
-        if (orders.add(new Order(title, quantity, name, address, email)))
+        if (orders.add(new Order(bookId, quantity, name, address, email)))
             return true;
         else
             return false;
     }
     
+    public void changeOrderState(Order order, String state) {       
+        order.setOrderState(state);
+    }
+ 
+    public void setOrderDeliveryDate(Order order, Date date) {       
+        order.setOrderDeliveryDate(date);
+    }
     
     /**
      * Sends a message to the queue of the warehouse
@@ -112,6 +169,14 @@ public class Operations {
         } catch(Exception ex){
             ex.printStackTrace();
         }
+    }
+
+    private void sendMail(String email, String subject, String body) throws NamingException, MessagingException {
+        MimeMessage message = new MimeMessage(mailmyMail);
+        message.setSubject(subject);
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email, false));
+        message.setText(body);
+        Transport.send(message);
     }
 
 }

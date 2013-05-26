@@ -29,7 +29,7 @@
                         <p>
                             <label for="title">Book title:</label>
                             <br>
-                                <select id="title" name="title">                                
+                                <select id="bookId" name="bookId">                                
                                     <%-- start web service invocation --%>
                                     <%
                                     try {

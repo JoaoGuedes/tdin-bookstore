@@ -4,6 +4,7 @@
  */
 package pt.up.fe.tdin.bookstore.store;
 
+import java.util.Date;
 import java.util.List;
 import javax.ejb.EJB;
 import javax.jws.WebService;
@@ -14,7 +15,7 @@ import javax.jws.WebParam;
 
 /**
  *
- * @author ctrler
+ * @author Joao
  */
 @WebService(serviceName = "myWebService")
 @Stateless()
@@ -34,9 +35,32 @@ public class myWebService {
         return ejbRef.getBookList();
     }
 
+    @WebMethod(operationName = "getBook")
+    public Book getBook(@WebParam(name = "id") int id) {
+        return ejbRef.getBook(id);
+    }
+
     @WebMethod(operationName = "placeOrder")
-    public Boolean placeOrder(@WebParam(name = "title") String title, @WebParam(name = "quantity") int quantity, @WebParam(name = "name") String name, @WebParam(name = "address") String address, @WebParam(name = "email") String email) {
-        return ejbRef.placeOrder(title, quantity, name, address, email);
+    public Boolean placeOrder(@WebParam(name = "bookId") int bookId, @WebParam(name = "quantity") int quantity, @WebParam(name = "name") String name, @WebParam(name = "address") String address, @WebParam(name = "email") String email) {
+        return ejbRef.placeOrder(bookId, quantity, name, address, email);
+    }
+
+    @WebMethod(operationName = "changeOrderState")
+    @Oneway
+    public void changeOrderState(@WebParam(name = "order") Order order, @WebParam(name = "state") String state) {
+        ejbRef.changeOrderState(order, state);
+    }
+
+    @WebMethod(operationName = "setOrderDeliveryDate")
+    @Oneway
+    public void setOrderDeliveryDate(@WebParam(name = "order") Order order, @WebParam(name = "date") Date date) {
+        ejbRef.setOrderDeliveryDate(order, date);
+    }
+
+    @WebMethod(operationName = "sendWarehouse")
+    @Oneway
+    public void sendWarehouse(@WebParam(name = "messageToSend") String messageToSend) {
+        ejbRef.sendWarehouse(messageToSend);
     }
     
 }
