@@ -41,6 +41,11 @@ public class myWebService {
         return ejbRef.getBook(id);
     }
 
+    @WebMethod(operationName = "getBookStockLeft")
+    public int getBookStockLeft(@WebParam(name = "id") int id) {
+        return ejbRef.getBookStockLeft(id);
+    }
+
     @WebMethod(operationName = "placeOrder")
     public Boolean placeOrder(@WebParam(name = "bookId") int bookId, @WebParam(name = "quantity") int quantity, @WebParam(name = "name") String name, @WebParam(name = "address") String address, @WebParam(name = "email") String email) {
         return ejbRef.placeOrder(bookId, quantity, name, address, email);

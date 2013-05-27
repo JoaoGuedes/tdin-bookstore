@@ -73,9 +73,9 @@ public class Operations {
      */
     public void populateBookList() {
         System.out.println("[populateBookList()] called");
-        bookList.add(new Book("1984", 10));
-        bookList.add(new Book("Bíblia", 20));
-        bookList.add(new Book("A Mensagem", 2));
+        bookList.add(new Book("1984", 10, 5.5));
+        bookList.add(new Book("Bíblia", 20, 5));
+        bookList.add(new Book("A Mensagem", 2, 20));
     }
     
     public List<Book> getBookList() {        
@@ -83,6 +83,11 @@ public class Operations {
         return bookList;
     }
     
+    /***
+     * Returns a book from book array
+     * @param id    book id
+     * @return
+     */
     public Book getBook(int id) {
         for (Book b : bookList) {
             if (b.getId() == id)
@@ -91,6 +96,14 @@ public class Operations {
         return null;
     }
     
+    /***
+     * Returns stock of a given book
+     * @param id    book id
+     * @return 
+     */
+    public int getBookStockLeft(int id) {        
+        return getBook(id).getAvailability();        
+    }
 
     /**
      * Places a new order on the system
@@ -124,21 +137,33 @@ public class Operations {
             // TODO: set order status accordingly and wait(?) for shipment
             return true;
         }       
+        
+        //There is enough stock to fulfill order
+        //Set current stock
         myBook.setAvailability(stockLeft);
         
+        //Create new order and set delivery date for tomorrow
         Order newOrder = new Order(bookId, quantity, name, address, email);
         newOrder.setOrderState("DISPATCHED");
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.DAY_OF_YEAR, 1);
         newOrder.setOrderDeliveryDate(cal.getTime());
+        
+        //Compose message and send email to client
         try {
-        String message = "Hi " + name + ",\n"
-                + "Your order of " + myBook.getTitle() + " is scheduled to be delivered by " 
-                + new SimpleDateFormat("EEE, dd MMM").format(newOrder.getOrderDeliveryDate());
-        sendMail(email, "Bookstore order", message);
-        } catch (Exception e) {}
+            String message = "Hi " + name + ",\n"
+                    + "Your order of \"" + myBook.getTitle() + "\" is scheduled to be delivered by " 
+                    + new SimpleDateFormat("EEE, dd MMM").format(newOrder.getOrderDeliveryDate()) + ".\n"
+                    + "The total cost for your order is " + quantity*myBook.getPrice();
+            sendMail(email, "Bookstore order", message);
+        } catch (Exception e) {
+            System.out.print(e.getMessage());
+        }
 
+        //TODO: print receipt
+        
+        //Add order to array
         if (orders.add(new Order(bookId, quantity, name, address, email)))
             return true;
         else

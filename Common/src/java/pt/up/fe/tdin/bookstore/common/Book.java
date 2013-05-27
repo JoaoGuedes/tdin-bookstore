@@ -19,16 +19,22 @@ public class Book implements Serializable {
     private int id;
     private String title;
     private int available;
+    private double price;
     
     /**
      * Creates a new book
      * @param title book title
      * @param available available quantity 
      */
-    public Book(String title, int available) {
+    public Book(String title, int available, double price) {
         this.id = BOOKID++;
         this.title = title;
         this.available = available;
+        this.price = price;
+    }
+    
+    public double getPrice() {
+        return price;
     }
     
     public String getTitle() {
@@ -53,6 +59,10 @@ public class Book implements Serializable {
  
     public void setAvailability(int available) {
         this.available = available;
-    }   
+    }  
+    
+    public void setPrice(double price) {
+        this.price = price;
+    }
     
 }
