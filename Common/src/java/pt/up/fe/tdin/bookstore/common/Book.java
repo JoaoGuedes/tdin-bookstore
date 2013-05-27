@@ -2,15 +2,19 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package pt.up.fe.tdin.bookstore.store;
+package pt.up.fe.tdin.bookstore.common;
+
+import java.io.Serializable;
 
 
 /**
  *
  * @author joaoguedes
  */
-public class Book {
+public class Book implements Serializable {
+        
     private static int BOOKID=0;
+    private static final long serialVersionUID = 1112132213L;
     
     private int id;
     private String title;

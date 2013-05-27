@@ -16,9 +16,9 @@ import javax.ejb.LocalBean;
 import javax.ejb.Startup;
 import javax.jms.ConnectionFactory;
 import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
 import javax.jms.Queue;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Transport;
@@ -27,6 +27,8 @@ import javax.mail.internet.MimeMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import pt.up.fe.tdin.bookstore.common.Book;
+import pt.up.fe.tdin.bookstore.common.WarehouseOrder;
 /**
  *
  * @author joaoguedes
@@ -111,9 +113,16 @@ public class Operations {
         
         Book myBook = getBook(bookId);
         int stockLeft = myBook.getAvailability() - quantity;
-        if (stockLeft < 0) {
-            //TODO: place order on Warehouse
-            return false;
+        
+        if (stockLeft < 0) { // Sends request to warehouse if not enough stock
+            
+            int stockToOrder = quantity*10;
+            WarehouseOrder warehouseOrder = new WarehouseOrder(myBook,stockToOrder);
+     
+            sendWarehouse(warehouseOrder);
+            
+            // TODO: set order status accordingly and wait(?) for shipment
+            return true;
         }       
         myBook.setAvailability(stockLeft);
         
@@ -129,7 +138,6 @@ public class Operations {
                 + new SimpleDateFormat("EEE, dd MMM").format(newOrder.getOrderDeliveryDate());
         sendMail(email, "Bookstore order", message);
         } catch (Exception e) {}
-        sendWarehouse("Faz de conta que isto é um livro!");
 
         if (orders.add(new Order(bookId, quantity, name, address, email)))
             return true;
@@ -148,23 +156,26 @@ public class Operations {
     /**
      * Sends a message to the queue of the warehouse
      */
-    public void sendWarehouse(String messageToSend){
+    private void sendWarehouse(WarehouseOrder warehouseOrder){
        
         try{
             Context ctx = new InitialContext();
             ConnectionFactory connectionFactory = (ConnectionFactory)ctx.lookup("jms/ConnectionFactory");
             Queue queue = (Queue)ctx.lookup("jms/myQueue");
             javax.jms.Connection  connection = connectionFactory.createConnection();
-            javax.jms.Session        session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
+            javax.jms.Session session = connection.createSession(false,Session.AUTO_ACKNOWLEDGE);
             MessageProducer messageProducer = session.createProducer(queue);
-            TextMessage message = session.createTextMessage();
-            message.setText(messageToSend);
+            ObjectMessage message = session.createObjectMessage(warehouseOrder);
+            
             messageProducer.send(message);
 
             //message sent , it was all
             
             //show what we have done in this servlet
-            System.out.print("Servlet Send this message "+ messageToSend + "  to this Queue : " + queue.getQueueName());
+            System.out.print("Servlet Sent: OrderID: "+ warehouseOrder.getOrderId()
+                    + " | Book: " + warehouseOrder.getBook().getTitle()
+                    + " | Quantity: " + warehouseOrder.getQuantity()
+                    + " to this Queue: " + queue.getQueueName());
             
         } catch(Exception ex){
             ex.printStackTrace();

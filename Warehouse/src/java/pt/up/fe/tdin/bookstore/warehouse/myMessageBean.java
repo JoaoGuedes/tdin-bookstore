@@ -13,7 +13,8 @@ import javax.ejb.MessageDrivenContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.TextMessage;
+import javax.jms.ObjectMessage;
+import pt.up.fe.tdin.bookstore.common.WarehouseOrder;
 
 /**
  *
@@ -33,10 +34,16 @@ public class myMessageBean implements MessageListener {
     
     @Override
     public void onMessage(Message message) {
+        WarehouseOrder receivedOrder = null;  
         try {
-            System.out.print("WarehouseQUEUE: " + ((TextMessage) message).getText());
+            ObjectMessage objMessage = (ObjectMessage) message;
+            receivedOrder = (WarehouseOrder) objMessage.getObject();
         } catch (JMSException ex) {
             Logger.getLogger(myMessageBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if(receivedOrder!=null)
+            System.out.print("WarehouseQUEUE: " + receivedOrder.getBook().getTitle() + " | Qty: " + receivedOrder.getQuantity());
+        else
+            System.err.println("WarehouseQUEUE: Shit has hit the fan.");
     }
 }

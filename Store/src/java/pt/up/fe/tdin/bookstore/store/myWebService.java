@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.jws.Oneway;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+import pt.up.fe.tdin.bookstore.common.Book;
 
 /**
  *
@@ -55,12 +56,6 @@ public class myWebService {
     @Oneway
     public void setOrderDeliveryDate(@WebParam(name = "order") Order order, @WebParam(name = "date") Date date) {
         ejbRef.setOrderDeliveryDate(order, date);
-    }
-
-    @WebMethod(operationName = "sendWarehouse")
-    @Oneway
-    public void sendWarehouse(@WebParam(name = "messageToSend") String messageToSend) {
-        ejbRef.sendWarehouse(messageToSend);
     }
     
 }
