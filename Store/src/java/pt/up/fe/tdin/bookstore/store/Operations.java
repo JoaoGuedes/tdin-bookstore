@@ -136,10 +136,12 @@ public class Operations {
             WarehouseOrder warehouseOrder = new WarehouseOrder(myBook,stockToOrder);
      
             sendWarehouse(warehouseOrder);
+            // Create a new order and set its state as awaiting expedition.
+            Order newOrder = new Order(bookId, quantity, name, address, email);
+            newOrder.setOrderState("WAITING");
             
-            // TODO: set order status accordingly and wait(?) for shipment
-            return true;
-        }       
+            return orders.add(newOrder);
+         }       
         
         //There is enough stock to fulfill order
         //Set current stock
@@ -167,10 +169,7 @@ public class Operations {
         //TODO: print receipt
         
         //Add order to array
-        if (orders.add(new Order(bookId, quantity, name, address, email)))
-            return true;
-        else
-            return false;
+        return orders.add(newOrder);
     }
     
     public void changeOrderState(Order order, String state) {       
