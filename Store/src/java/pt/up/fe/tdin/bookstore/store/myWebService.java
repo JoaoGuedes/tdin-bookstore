@@ -41,6 +41,12 @@ public class myWebService {
         return ejbRef.getBook(id);
     }
 
+    @WebMethod(operationName = "setBookAvailability")
+    @Oneway
+    public void setBookAvailability(@WebParam(name = "id") int id, @WebParam(name = "availability") int availability) {
+        ejbRef.setBookAvailability(id, availability);
+    }
+
     @WebMethod(operationName = "getBookStockLeft")
     public int getBookStockLeft(@WebParam(name = "id") int id) {
         return ejbRef.getBookStockLeft(id);

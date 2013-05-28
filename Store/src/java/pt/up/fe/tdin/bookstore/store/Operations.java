@@ -38,8 +38,6 @@ import pt.up.fe.tdin.bookstore.common.WarehouseOrder;
 @LocalBean
 public class Operations {
     @Resource(name = "mail/myMail")
-    private javax.mail.Session mailmyMail1;
-    @Resource(name = "mail/myMail")
     private javax.mail.Session mailmyMail;
 
  /**
@@ -94,6 +92,11 @@ public class Operations {
                 return b;
         }        
         return null;
+    }
+    
+    public void setBookAvailability(int id, int availability) {
+        System.out.println("[setBookAvailability()] called");
+        getBook(id).setAvailability(availability);
     }
     
     /***

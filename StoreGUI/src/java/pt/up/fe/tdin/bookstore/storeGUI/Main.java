@@ -7,6 +7,10 @@ package pt.up.fe.tdin.bookstore.storeGUI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableModel;
 import javax.xml.ws.WebServiceRef;
 import pt.up.fe.tdin.bookstore.store.*;
 /**
@@ -23,6 +27,20 @@ public class Main extends java.awt.Frame {
      */
     public Main() {
         initComponents(); 
+        final int STOCK = 2;
+        jTable1.getModel().addTableModelListener(new TableModelListener() {            
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                int row = e.getFirstRow();
+                int column = e.getColumn();
+                TableModel model = (TableModel)e.getSource();
+                if (column == STOCK) {
+                    int id = bookList.get(row).getId();
+                    MyWebService port = service.getMyWebServicePort();
+                    port.setBookAvailability(id, Integer.parseInt((String) model.getValueAt(row, column)));
+                }
+            }
+        });
     }
 
     /**
@@ -50,7 +68,14 @@ public class Main extends java.awt.Frame {
             myRow.add(b.getAvailability());
             data.add(myRow);
         }
-        jTable1 = new javax.swing.JTable(data, columnNames);
+        jTable1 = new javax.swing.JTable(data, columnNames) {
+            public boolean isCellEditable(int row,int column){
+                if (column != 2)
+                return false;
+
+                return true;
+            }
+        };
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
