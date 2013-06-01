@@ -27,6 +27,9 @@ import javax.mail.internet.MimeMessage;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import pt.up.fe.tdin.bookstore.common.Book;
 import pt.up.fe.tdin.bookstore.common.WarehouseOrder;
 /**
@@ -46,24 +49,25 @@ public class Operations {
     
     @PostConstruct
     private void postConstruct() {
+        orders = new ArrayList();
+        bookList = new ArrayList();
+        orders = em.createNativeQuery("SELECT * FROM BOOKORDER").getResultList();
        System.out.println("EJB Created");
+       
        populateBookList();
     }
     
     /***
      * List of placed orders
      */
-    private List<Order> orders;
+    private List<BookOrder> orders;
+    @PersistenceContext(unitName = "StorePU")
+    private EntityManager em;
     
     /**
      * List of available books
      */
     private List<Book> bookList;
-
-    public Operations () {
-        orders = new ArrayList();
-        bookList = new ArrayList();
-    }
     
     /**
      * Populates book list. 
@@ -137,7 +141,7 @@ public class Operations {
      
             sendWarehouse(warehouseOrder);
             // Create a new order and set its state as awaiting expedition.
-            Order newOrder = new Order(bookId, quantity, name, address, email);
+            BookOrder newOrder = new BookOrder(bookId, quantity, name, address, email);
             newOrder.setOrderState("WAITING");
             
             return orders.add(newOrder);
@@ -148,7 +152,7 @@ public class Operations {
         myBook.setAvailability(stockLeft);
         
         //Create new order and set delivery date for tomorrow
-        Order newOrder = new Order(bookId, quantity, name, address, email);
+        BookOrder newOrder = new BookOrder(bookId, quantity, name, address, email);
         newOrder.setOrderState("DISPATCHED");
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
@@ -169,14 +173,15 @@ public class Operations {
         //TODO: print receipt
         
         //Add order to array
+        persist(newOrder);
         return orders.add(newOrder);
     }
     
-    public void changeOrderState(Order order, String state) {       
+    public void changeOrderState(BookOrder order, String state) {       
         order.setOrderState(state);
     }
  
-    public void setOrderDeliveryDate(Order order, Date date) {       
+    public void setOrderDeliveryDate(BookOrder order, Date date) {       
         order.setOrderDeliveryDate(date);
     }
     
@@ -215,6 +220,10 @@ public class Operations {
         message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email, false));
         message.setText(body);
         Transport.send(message);
+    }
+
+    public void persist(Object object) {
+        em.persist(object);
     }
 
 }

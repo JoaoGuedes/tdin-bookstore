@@ -16,7 +16,7 @@ import pt.up.fe.tdin.bookstore.common.Book;
 
 /**
  *
- * @author Joao
+ * @author Administrator
  */
 @WebService(serviceName = "myWebService")
 @Stateless()
@@ -59,14 +59,20 @@ public class myWebService {
 
     @WebMethod(operationName = "changeOrderState")
     @Oneway
-    public void changeOrderState(@WebParam(name = "order") Order order, @WebParam(name = "state") String state) {
+    public void changeOrderState(@WebParam(name = "order") BookOrder order, @WebParam(name = "state") String state) {
         ejbRef.changeOrderState(order, state);
     }
 
     @WebMethod(operationName = "setOrderDeliveryDate")
     @Oneway
-    public void setOrderDeliveryDate(@WebParam(name = "order") Order order, @WebParam(name = "date") Date date) {
+    public void setOrderDeliveryDate(@WebParam(name = "order") BookOrder order, @WebParam(name = "date") Date date) {
         ejbRef.setOrderDeliveryDate(order, date);
+    }
+
+    @WebMethod(operationName = "persist")
+    @Oneway
+    public void persist(@WebParam(name = "object") Object object) {
+        ejbRef.persist(object);
     }
     
 }
