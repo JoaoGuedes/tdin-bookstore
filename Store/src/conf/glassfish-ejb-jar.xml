@@ -5,8 +5,6 @@
     <ejb>
       <ejb-name>Operations</ejb-name>
       <resource-ref>
-        <res-ref-name>orders</res-ref-name>
-        <jndi-name>jdbc/Orders</jndi-name>
       </resource-ref>
     </ejb>
   </enterprise-beans>

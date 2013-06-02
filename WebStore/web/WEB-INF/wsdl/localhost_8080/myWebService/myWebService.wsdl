@@ -4,11 +4,14 @@
 <xsd:import namespace="http://store.bookstore.tdin.fe.up.pt/" schemaLocation="http://localhost:8080/myWebService/myWebService?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="placeOrder">
-<part name="parameters" element="tns:placeOrder"/>
+<message name="setBookAvailability">
+<part name="parameters" element="tns:setBookAvailability"/>
 </message>
-<message name="placeOrderResponse">
-<part name="parameters" element="tns:placeOrderResponse"/>
+<message name="getBookStockLeft">
+<part name="parameters" element="tns:getBookStockLeft"/>
+</message>
+<message name="getBookStockLeftResponse">
+<part name="parameters" element="tns:getBookStockLeftResponse"/>
 </message>
 <message name="getBookList">
 <part name="parameters" element="tns:getBookList"/>
@@ -22,8 +25,11 @@
 <message name="getBookResponse">
 <part name="parameters" element="tns:getBookResponse"/>
 </message>
-<message name="populateBookList">
-<part name="parameters" element="tns:populateBookList"/>
+<message name="placeOrder">
+<part name="parameters" element="tns:placeOrder"/>
+</message>
+<message name="placeOrderResponse">
+<part name="parameters" element="tns:placeOrderResponse"/>
 </message>
 <message name="changeOrderState">
 <part name="parameters" element="tns:changeOrderState"/>
@@ -32,9 +38,12 @@
 <part name="parameters" element="tns:setOrderDeliveryDate"/>
 </message>
 <portType name="myWebService">
-<operation name="placeOrder">
-<input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/placeOrderRequest" message="tns:placeOrder"/>
-<output wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/placeOrderResponse" message="tns:placeOrderResponse"/>
+<operation name="setBookAvailability">
+<input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/setBookAvailability" message="tns:setBookAvailability"/>
+</operation>
+<operation name="getBookStockLeft">
+<input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/getBookStockLeftRequest" message="tns:getBookStockLeft"/>
+<output wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/getBookStockLeftResponse" message="tns:getBookStockLeftResponse"/>
 </operation>
 <operation name="getBookList">
 <input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/getBookListRequest" message="tns:getBookList"/>
@@ -44,8 +53,9 @@
 <input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/getBookRequest" message="tns:getBook"/>
 <output wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/getBookResponse" message="tns:getBookResponse"/>
 </operation>
-<operation name="populateBookList">
-<input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/populateBookList" message="tns:populateBookList"/>
+<operation name="placeOrder">
+<input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/placeOrderRequest" message="tns:placeOrder"/>
+<output wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/placeOrderResponse" message="tns:placeOrderResponse"/>
 </operation>
 <operation name="changeOrderState">
 <input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/changeOrderState" message="tns:changeOrderState"/>
@@ -56,7 +66,13 @@
 </portType>
 <binding name="myWebServicePortBinding" type="tns:myWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="placeOrder">
+<operation name="setBookAvailability">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+</operation>
+<operation name="getBookStockLeft">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -83,11 +99,14 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="populateBookList">
+<operation name="placeOrder">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
 </input>
+<output>
+<soap:body use="literal"/>
+</output>
 </operation>
 <operation name="changeOrderState">
 <soap:operation soapAction=""/>

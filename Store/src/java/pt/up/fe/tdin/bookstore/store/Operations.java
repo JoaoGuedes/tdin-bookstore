@@ -42,10 +42,6 @@ import pt.up.fe.tdin.bookstore.common.WarehouseOrder;
 public class Operations {
     @Resource(name = "mail/myMail")
     private javax.mail.Session mailmyMail;
-
- /**
-     * List of placed orders
-     */
     
     @PostConstruct
     private void postConstruct() {
@@ -58,34 +54,26 @@ public class Operations {
     }
     
     /***
-     * List of placed orders
+     * List of placed orders and available books
      */
     private List<BookOrder> orders;
+        private List<Book> bookList;
+    
     @PersistenceContext(unitName = "StorePU")
     private EntityManager em;
-    
-    /**
-     * List of available books
-     */
-    private List<Book> bookList;
     
     /**
      * Populates book list. 
      * Should be fetched from a file in the future (?).
      */
-    public void populateBookList() {
+    private void populateBookList() {
         System.out.println("[populateBookList()] called");
         bookList.add(new Book("1984", 10, 5.5));
         bookList.add(new Book("Bíblia", 20, 5));
         bookList.add(new Book("A Mensagem", 2, 20));
     }
-    
-    public List<Book> getBookList() {        
-        System.out.println("[getBookList()] called");
-        return bookList;
-    }
-    
-    /***
+ 
+     /***
      * Returns a book from book array
      * @param id    book id
      * @return
@@ -98,9 +86,9 @@ public class Operations {
         return null;
     }
     
-    public void setBookAvailability(int id, int availability) {
-        System.out.println("[setBookAvailability()] called");
-        getBook(id).setAvailability(availability);
+    public List<Book> getBookList() {        
+        System.out.println("[getBookList()] called");
+        return bookList;
     }
     
     /***
@@ -110,6 +98,11 @@ public class Operations {
      */
     public int getBookStockLeft(int id) {        
         return getBook(id).getAvailability();        
+    }
+    
+    public void setBookAvailability(int id, int availability) {
+        System.out.println("[setBookAvailability()] called");
+        getBook(id).setAvailability(availability);
     }
 
     /**
@@ -172,17 +165,36 @@ public class Operations {
 
         //TODO: print receipt
         
-        //Add order to array
+        //Add order to array and store it in the DB
         persist(newOrder);
         return orders.add(newOrder);
     }
     
-    public void changeOrderState(BookOrder order, String state) {       
+    /***
+     * Changes the state of an order, locally and on the database
+     * @param order order to be changed
+     * @param state changed state
+     */
+    public void changeOrderState(BookOrder order, String state) {   
         order.setOrderState(state);
+        BookOrder dbOrder = em.find(BookOrder.class, order.getId());
+        em.getTransaction().begin();
+        dbOrder.setOrderState(state);
+        em.getTransaction().commit();
+
     }
- 
+    
+    /***
+     * Changes the delivery date of an order, locally and on the database
+     * @param order
+     * @param date 
+     */
     public void setOrderDeliveryDate(BookOrder order, Date date) {       
         order.setOrderDeliveryDate(date);
+        BookOrder dbOrder = em.find(BookOrder.class, order.getId());
+        em.getTransaction().begin();
+        dbOrder.setOrderDeliveryDate(date);
+        em.getTransaction().commit();
     }
     
     /**
@@ -222,7 +234,10 @@ public class Operations {
         Transport.send(message);
     }
 
-    public void persist(Object object) {
+    /*
+     * Persists object in the EntityManager
+     */
+    private void persist(Object object) {
         em.persist(object);
     }
 

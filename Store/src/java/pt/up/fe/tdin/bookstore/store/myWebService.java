@@ -25,10 +25,9 @@ public class myWebService {
     private Operations ejbRef;// Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Web Service Operation")
 
-    @WebMethod(operationName = "populateBookList")
-    @Oneway
-    public void populateBookList() {
-        ejbRef.populateBookList();
+    @WebMethod(operationName = "getBook")
+    public Book getBook(@WebParam(name = "id") int id) {
+        return ejbRef.getBook(id);
     }
 
     @WebMethod(operationName = "getBookList")
@@ -36,20 +35,15 @@ public class myWebService {
         return ejbRef.getBookList();
     }
 
-    @WebMethod(operationName = "getBook")
-    public Book getBook(@WebParam(name = "id") int id) {
-        return ejbRef.getBook(id);
+    @WebMethod(operationName = "getBookStockLeft")
+    public int getBookStockLeft(@WebParam(name = "id") int id) {
+        return ejbRef.getBookStockLeft(id);
     }
 
     @WebMethod(operationName = "setBookAvailability")
     @Oneway
     public void setBookAvailability(@WebParam(name = "id") int id, @WebParam(name = "availability") int availability) {
         ejbRef.setBookAvailability(id, availability);
-    }
-
-    @WebMethod(operationName = "getBookStockLeft")
-    public int getBookStockLeft(@WebParam(name = "id") int id) {
-        return ejbRef.getBookStockLeft(id);
     }
 
     @WebMethod(operationName = "placeOrder")
@@ -67,12 +61,6 @@ public class myWebService {
     @Oneway
     public void setOrderDeliveryDate(@WebParam(name = "order") BookOrder order, @WebParam(name = "date") Date date) {
         ejbRef.setOrderDeliveryDate(order, date);
-    }
-
-    @WebMethod(operationName = "persist")
-    @Oneway
-    public void persist(@WebParam(name = "object") Object object) {
-        ejbRef.persist(object);
     }
     
 }
