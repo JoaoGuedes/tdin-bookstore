@@ -22,23 +22,10 @@
 
 <xs:element name="setOrderDeliveryDate" type="tns:setOrderDeliveryDate"/>
 
-<xs:complexType name="setOrderDeliveryDate">
+<xs:complexType name="setBookAvailability">
 <xs:sequence>
-<xs:element name="order" type="tns:bookOrder" minOccurs="0"/>
-<xs:element name="date" type="xs:dateTime" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="bookOrder">
-<xs:sequence>
-<xs:element name="bookId" type="xs:int"/>
-<xs:element name="clientAddress" type="xs:string" minOccurs="0"/>
-<xs:element name="clientEmail" type="xs:string" minOccurs="0"/>
-<xs:element name="clientName" type="xs:string" minOccurs="0"/>
-<xs:element name="id" type="xs:long"/>
-<xs:element name="orderDeliveryDate" type="xs:dateTime" minOccurs="0"/>
-<xs:element name="orderState" type="xs:string" minOccurs="0"/>
-<xs:element name="quantity" type="xs:int"/>
+<xs:element name="id" type="xs:int"/>
+<xs:element name="availability" type="xs:int"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -63,10 +50,10 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="setBookAvailability">
+<xs:complexType name="setOrderDeliveryDate">
 <xs:sequence>
 <xs:element name="id" type="xs:int"/>
-<xs:element name="availability" type="xs:int"/>
+<xs:element name="date" type="xs:dateTime" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -110,7 +97,7 @@
 
 <xs:complexType name="changeOrderState">
 <xs:sequence>
-<xs:element name="order" type="tns:bookOrder" minOccurs="0"/>
+<xs:element name="id" type="xs:int"/>
 <xs:element name="state" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>

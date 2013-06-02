@@ -86,6 +86,17 @@ public class Operations {
         return null;
     }
     
+    /*
+     * Returns order by id from order list
+     */
+    private BookOrder getOrderById(int id) {
+        for (BookOrder bo: orders) {
+            if (bo.getId() == id)
+                return bo;
+        }
+        return null;
+    }
+    
     public List<Book> getBookList() {        
         System.out.println("[getBookList()] called");
         return bookList;
@@ -172,10 +183,11 @@ public class Operations {
     
     /***
      * Changes the state of an order, locally and on the database
-     * @param order order to be changed
+     * @param id    the id of the order
      * @param state changed state
      */
-    public void changeOrderState(BookOrder order, String state) {   
+    public void changeOrderState(int id, String state) {  
+        BookOrder order = getOrderById(id);
         order.setOrderState(state);
         BookOrder dbOrder = em.find(BookOrder.class, order.getId());
         em.getTransaction().begin();
@@ -186,10 +198,11 @@ public class Operations {
     
     /***
      * Changes the delivery date of an order, locally and on the database
-     * @param order
-     * @param date 
+     * @param id    the id of the order
+     * @param date  date to be changed
      */
-    public void setOrderDeliveryDate(BookOrder order, Date date) {       
+    public void setOrderDeliveryDate(int id, Date date) {    
+        BookOrder order = getOrderById(id);
         order.setOrderDeliveryDate(date);
         BookOrder dbOrder = em.find(BookOrder.class, order.getId());
         em.getTransaction().begin();
