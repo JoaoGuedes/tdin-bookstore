@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
+import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.ejb.MessageDrivenContext;
 import javax.jms.JMSException;
@@ -25,6 +26,8 @@ import pt.up.fe.tdin.bookstore.common.WarehouseOrder;
     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue")
 })
 public class myMessageBean implements MessageListener {
+    @EJB
+    private WarehouseOperations warehouseOperations;
 
     @Resource
     private MessageDrivenContext mdc;
@@ -41,8 +44,10 @@ public class myMessageBean implements MessageListener {
         } catch (JMSException ex) {
             Logger.getLogger(myMessageBean.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(receivedOrder!=null)
+        if(receivedOrder!=null){
+            warehouseOperations.addOrder(receivedOrder);
             System.out.print("WarehouseQUEUE: " + receivedOrder.getBook().getTitle() + " | Qty: " + receivedOrder.getQuantity());
+        }
         else
             System.err.println("WarehouseQUEUE: Shit has hit the fan.");
     }

@@ -3,5 +3,9 @@
   <persistence-unit name="StorePU" transaction-type="JTA">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>jdbc/BookstoreDB</jta-data-source>
+    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <properties>
+      <property name="eclipselink.ddl-generation" value="create-tables"/>
+    </properties>
   </persistence-unit>
 </persistence>
