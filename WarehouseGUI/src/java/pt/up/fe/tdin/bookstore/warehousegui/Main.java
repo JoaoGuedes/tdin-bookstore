@@ -4,9 +4,13 @@
  */
 package pt.up.fe.tdin.bookstore.warehousegui;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.xml.ws.WebServiceRef;
@@ -66,7 +70,7 @@ public class Main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("jButton1");
+        jButton1.setText("Refresh");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -74,6 +78,20 @@ public class Main extends javax.swing.JFrame {
         });
 
         jTable1.setToolTipText("");
+        jTable1.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+
+                if (evt.getClickCount() == 2) {
+                    JTable target = (JTable)evt.getSource();
+                    int row = target.getSelectedRow();
+                    System.out.println("Clickaste na row " + row);
+                    rowClicked(row);
+                }
+            }
+
+        });
         jScrollPane2.setViewportView(jTable1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -169,4 +187,19 @@ public class Main extends javax.swing.JFrame {
         pt.up.fe.tdin.bookstore.warehousegui.WarehouseWebservice port = service.getWarehouseWebservicePort();
         return port.getOrderList();
     }
+
+    private void rowClicked(int row){
+        
+        // Podia usar isto mas é mais facil ir buscar ao orders.
+        //int id = (Integer) jTable1.getModel().getValueAt(row, 0);
+        //String book = (String) jTable1.getModel().getValueAt(row, 1);
+      
+        WarehouseOrder wo = orders.get(row);
+        System.out.println("Clickaste no pedido " +  wo.getOrderId() + " do livro " + wo.getBook().getTitle());
+        
+        pt.up.fe.tdin.bookstore.warehousegui.WarehouseWebservice port = service.getWarehouseWebservicePort();
+        port.completedOrder(wo.getOrderId());
+        
+    }
+    
 }

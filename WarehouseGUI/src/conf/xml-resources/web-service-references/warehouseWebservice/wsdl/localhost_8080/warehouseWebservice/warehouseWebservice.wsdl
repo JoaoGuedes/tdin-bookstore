@@ -4,6 +4,9 @@
 <xsd:import namespace="http://warehouse.bookstore.tdin.fe.up.pt/" schemaLocation="http://localhost:8080/warehouseWebservice/warehouseWebservice?xsd=1"/>
 </xsd:schema>
 </types>
+<message name="completedOrder">
+<part name="parameters" element="tns:completedOrder"/>
+</message>
 <message name="addOrder">
 <part name="parameters" element="tns:addOrder"/>
 </message>
@@ -14,6 +17,9 @@
 <part name="parameters" element="tns:getOrderListResponse"/>
 </message>
 <portType name="warehouseWebservice">
+<operation name="completedOrder">
+<input wsam:Action="http://warehouse.bookstore.tdin.fe.up.pt/warehouseWebservice/completedOrder" message="tns:completedOrder"/>
+</operation>
 <operation name="addOrder">
 <input wsam:Action="http://warehouse.bookstore.tdin.fe.up.pt/warehouseWebservice/addOrder" message="tns:addOrder"/>
 </operation>
@@ -24,6 +30,12 @@
 </portType>
 <binding name="warehouseWebservicePortBinding" type="tns:warehouseWebservice">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<operation name="completedOrder">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+</operation>
 <operation name="addOrder">
 <soap:operation soapAction=""/>
 <input>

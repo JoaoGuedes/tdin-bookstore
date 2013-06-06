@@ -34,5 +34,11 @@ public class warehouseWebservice {
     public void addOrder(@WebParam(name = "wo") WarehouseOrder wo) {
         ejbRef.addOrder(wo);
     }
+
+    @WebMethod(operationName = "completedOrder")
+    @Oneway
+    public void completedOrder(@WebParam(name = "orderId") int orderId) {
+        ejbRef.completedOrder(orderId);
+    }
     
 }

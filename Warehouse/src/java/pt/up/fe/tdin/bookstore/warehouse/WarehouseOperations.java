@@ -31,12 +31,20 @@ public class WarehouseOperations {
     }
     
      public List<WarehouseOrder> getOrderList() {        
-        System.out.println("[getOrderList()] called");
+        System.out.println("[WarehouseOperations.getOrderList()] called");
         return orders;
     }
      
     public void addOrder(WarehouseOrder wo){
-         System.out.println("[getOrderList()] called");
+         System.out.println("[WarehouseOperations.addOrder()] called for order " + wo.getOrderId());
          orders.add(wo);
+    }
+    
+    public void completedOrder(int orderId){
+        for(WarehouseOrder wo : orders){
+            if(wo.getOrderId() == orderId){ //TODO Feio....
+                System.out.println("[WarehouseOperations.completedOrder()] called for order " + wo.getOrderId() + " " + wo.getBook().getTitle());
+            }
+        }
     }
 }
