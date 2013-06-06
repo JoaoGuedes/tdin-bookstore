@@ -4,8 +4,11 @@
  */
 package pt.up.fe.tdin.bookstore.warehousegui;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.xml.ws.WebServiceRef;
 
 /**
@@ -36,6 +39,7 @@ public class Main extends javax.swing.JFrame {
 
         jButton1 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
+        orders = new ArrayList();
         orders = getOrderList();
 
         Vector columnNames = new Vector();
@@ -99,8 +103,26 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        initComponents();
+        orders = getOrderList();
+        Vector data = new Vector();
+        for (WarehouseOrder wo: orders) {
+            Vector myRow = new Vector();
+            myRow.add(wo.getOrderId());
+            myRow.add(wo.book.getTitle());
+            myRow.add(wo.getQuantity());
+            data.add(myRow);
+        }
         
+        Vector columnNames = new Vector();
+        columnNames.add("ID");
+        columnNames.add("Title");
+        columnNames.add("Order");
+        
+        
+        DefaultTableModel tbm = (DefaultTableModel) jTable1.getModel();
+        tbm.setDataVector(data, columnNames);
+        tbm.fireTableDataChanged();
+        System.out.print("Aqui vai!");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -143,7 +165,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
-    private static java.util.List<pt.up.fe.tdin.bookstore.warehousegui.WarehouseOrder> getOrderList() {
+    private java.util.List<pt.up.fe.tdin.bookstore.warehousegui.WarehouseOrder> getOrderList() {
         pt.up.fe.tdin.bookstore.warehousegui.WarehouseWebservice port = service.getWarehouseWebservicePort();
         return port.getOrderList();
     }

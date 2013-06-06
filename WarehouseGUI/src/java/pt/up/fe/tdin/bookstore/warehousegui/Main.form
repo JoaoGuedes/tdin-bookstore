@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+<Form version="1.5" maxVersion="1.8" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
   </Properties>
@@ -75,7 +75,7 @@
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(data, columnNames) {&#xa;    public boolean isCellEditable(int row,int column){&#xa;        if (column != 2)&#xa;            return false;&#xa;&#xa;        return true;&#xa;    }&#xa;}"/>
-            <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="orders = getOrderList();&#xa;&#xa;Vector columnNames = new Vector();&#xa;columnNames.add(&quot;ID&quot;);&#xa;columnNames.add(&quot;Title&quot;);&#xa;columnNames.add(&quot;Order&quot;);&#xa;&#xa;&#xa;Vector data = new Vector();&#xa;for (WarehouseOrder wo: orders) {&#xa;    Vector myRow = new Vector();&#xa;    myRow.add(wo.getOrderId());&#xa;    myRow.add(wo.book.getTitle());&#xa;    myRow.add(wo.getQuantity());&#xa;    data.add(myRow);&#xa;}"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="orders = new ArrayList();&#xa;orders = getOrderList();&#xa;&#xa;Vector columnNames = new Vector();&#xa;columnNames.add(&quot;ID&quot;);&#xa;columnNames.add(&quot;Title&quot;);&#xa;columnNames.add(&quot;Order&quot;);&#xa;&#xa;&#xa;Vector data = new Vector();&#xa;for (WarehouseOrder wo: orders) {&#xa;    Vector myRow = new Vector();&#xa;    myRow.add(wo.getOrderId());&#xa;    myRow.add(wo.book.getTitle());&#xa;    myRow.add(wo.getQuantity());&#xa;    data.add(myRow);&#xa;}"/>
           </AuxValues>
         </Component>
       </SubComponents>
