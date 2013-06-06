@@ -4,12 +4,6 @@
 <xsd:import namespace="http://store.bookstore.tdin.fe.up.pt/" schemaLocation="http://localhost:8080/myWebService/myWebService?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="changeOrderState">
-<part name="parameters" element="tns:changeOrderState"/>
-</message>
-<message name="setOrderDeliveryDate">
-<part name="parameters" element="tns:setOrderDeliveryDate"/>
-</message>
 <message name="getBookList">
 <part name="parameters" element="tns:getBookList"/>
 </message>
@@ -37,13 +31,22 @@
 <message name="setBookAvailability">
 <part name="parameters" element="tns:setBookAvailability"/>
 </message>
+<message name="setOrderDeliveryDate">
+<part name="parameters" element="tns:setOrderDeliveryDate"/>
+</message>
+<message name="changeOrderState">
+<part name="parameters" element="tns:changeOrderState"/>
+</message>
+<message name="getPendingOrders">
+<part name="parameters" element="tns:getPendingOrders"/>
+</message>
+<message name="getPendingOrdersResponse">
+<part name="parameters" element="tns:getPendingOrdersResponse"/>
+</message>
+<message name="satisfyPendingOrders">
+<part name="parameters" element="tns:satisfyPendingOrders"/>
+</message>
 <portType name="myWebService">
-<operation name="changeOrderState">
-<input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/changeOrderState" message="tns:changeOrderState"/>
-</operation>
-<operation name="setOrderDeliveryDate">
-<input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/setOrderDeliveryDate" message="tns:setOrderDeliveryDate"/>
-</operation>
 <operation name="getBookList">
 <input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/getBookListRequest" message="tns:getBookList"/>
 <output wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/getBookListResponse" message="tns:getBookListResponse"/>
@@ -63,21 +66,22 @@
 <operation name="setBookAvailability">
 <input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/setBookAvailability" message="tns:setBookAvailability"/>
 </operation>
+<operation name="setOrderDeliveryDate">
+<input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/setOrderDeliveryDate" message="tns:setOrderDeliveryDate"/>
+</operation>
+<operation name="changeOrderState">
+<input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/changeOrderState" message="tns:changeOrderState"/>
+</operation>
+<operation name="getPendingOrders">
+<input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/getPendingOrdersRequest" message="tns:getPendingOrders"/>
+<output wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/getPendingOrdersResponse" message="tns:getPendingOrdersResponse"/>
+</operation>
+<operation name="satisfyPendingOrders">
+<input wsam:Action="http://store.bookstore.tdin.fe.up.pt/myWebService/satisfyPendingOrders" message="tns:satisfyPendingOrders"/>
+</operation>
 </portType>
 <binding name="myWebServicePortBinding" type="tns:myWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="changeOrderState">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-</operation>
-<operation name="setOrderDeliveryDate">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-</operation>
 <operation name="getBookList">
 <soap:operation soapAction=""/>
 <input>
@@ -115,6 +119,33 @@
 </output>
 </operation>
 <operation name="setBookAvailability">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+</operation>
+<operation name="setOrderDeliveryDate">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+</operation>
+<operation name="changeOrderState">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+</operation>
+<operation name="getPendingOrders">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="satisfyPendingOrders">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

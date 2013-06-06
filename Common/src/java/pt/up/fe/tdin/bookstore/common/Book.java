@@ -26,8 +26,8 @@ public class Book implements Serializable {
      * @param title book title
      * @param available available quantity 
      */
-    public Book(String title, int available, double price) {
-        this.id = BOOKID++;
+    public Book(String title, int available, double price, int id) {
+        this.id = id;
         this.title = title;
         this.available = available;
         this.price = price;

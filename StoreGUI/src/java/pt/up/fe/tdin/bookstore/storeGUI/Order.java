@@ -138,7 +138,7 @@ public class Order extends javax.swing.JDialog {
         int bookId = Main.bookList.get(index).getId();
         int qt = Integer.parseInt(quantity.getText());
         MyWebService port = Main.service.getMyWebServicePort();
-        if (port.placeOrder(bookId, qt, name.getText(), address.getText(), email.getText()))
+        if (port.placeOrder(bookId, qt, name.getText(), address.getText(), email.getText(), true))
             JOptionPane.showMessageDialog(null, "Order placed.");
         else
             JOptionPane.showMessageDialog(null, "There were problems with the order.");
@@ -200,8 +200,8 @@ public class Order extends javax.swing.JDialog {
     private javax.swing.JComboBox title;
     // End of variables declaration//GEN-END:variables
 
-    private Boolean placeOrder(int bookId, int quantity, String name, String address, String email) {
+    private Boolean placeOrder(int bookId, int quantity, String name, String address, String email, boolean boughtOnStore) {
         MyWebService port = service.getMyWebServicePort();
-        return port.placeOrder(bookId, quantity, name, address, email);
+        return port.placeOrder(bookId, quantity, name, address, email, boughtOnStore);
     }
 }

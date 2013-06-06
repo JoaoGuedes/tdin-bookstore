@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.Singleton;
@@ -29,7 +31,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import pt.up.fe.tdin.bookstore.common.Book;
 import pt.up.fe.tdin.bookstore.common.WarehouseOrder;
 /**
@@ -47,7 +49,9 @@ public class Operations {
     private void postConstruct() {
         orders = new ArrayList();
         bookList = new ArrayList();
-        orders = em.createNativeQuery("SELECT * FROM BOOKORDER").getResultList();
+        TypedQuery<BookOrder> query = em.createQuery("SELECT b FROM BookOrder b", BookOrder.class);
+        orders = query.getResultList();
+
        System.out.println("EJB Created");
        
        populateBookList();
@@ -68,9 +72,9 @@ public class Operations {
      */
     private void populateBookList() {
         System.out.println("[populateBookList()] called");
-        bookList.add(new Book("1984", 10, 5.5));
-        bookList.add(new Book("Bíblia", 20, 5));
-        bookList.add(new Book("A Mensagem", 2, 20));
+        bookList.add(new Book("1984", 10, 5.5, 1));
+        bookList.add(new Book("Bíblia", 20, 5, 2));
+        bookList.add(new Book("A Mensagem", 2, 20, 3));
     }
  
      /***
@@ -102,6 +106,32 @@ public class Operations {
         return bookList;
     }
     
+    /*
+     * Returns all orders for a certain book.
+     */
+    private List<BookOrder> getOrdersByBook(int bookId) {
+        List<BookOrder> ordersBook = new ArrayList<BookOrder>();
+        System.out.print(orders);
+        for (BookOrder bo: orders) {
+            if (bo.getBookId() == bookId)
+                ordersBook.add(bo);
+        }
+        return ordersBook;
+    }
+    
+    /*
+     * Returns all pending orders (orders whose state equals dispatching)
+     * for a certain book
+     */
+    public List<BookOrder> getPendingOrders(int bookId) {
+        List<BookOrder> ordersBook = getOrdersByBook(bookId);
+        List<BookOrder> pendingOrders = new ArrayList<BookOrder>();
+        for (BookOrder bo: ordersBook) {
+               if (bo.getOrderState().equals(BookOrder.State.DISPATCHING.toString()))
+                   pendingOrders.add(bo);
+        }
+        return pendingOrders;
+    }
     /***
      * Returns stock of a given book
      * @param id    book id
@@ -111,11 +141,48 @@ public class Operations {
         return getBook(id).getAvailability();        
     }
     
+    /*
+     * Sets stock of a given book
+     */
     public void setBookAvailability(int id, int availability) {
         System.out.println("[setBookAvailability()] called");
-        getBook(id).setAvailability(availability);
+        getBook(id).setAvailability(availability);      
     }
 
+    /*
+     * Satisfies all pending orders for a given book
+     * Schedules a new delivery and sends mail to costumer.
+     */
+    public void satisfyPendingOrders(int bookId) {
+        List<BookOrder> pendingOrders = getPendingOrders(bookId);
+        
+        for (BookOrder po: pendingOrders) {
+            int currentStockMinusThisOrder = getBookStockLeft(bookId) - po.getQuantity();
+            if (currentStockMinusThisOrder >= 0) {
+                getBook(bookId).setAvailability(currentStockMinusThisOrder);
+                po.setOrderState(BookOrder.State.DISPATCHED.toString());
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(new Date());
+                po.setOrderDeliveryDate(cal.getTime());
+                Book myBook = getBook(po.getBookId());
+                String message = "Hi " + po.getClientName() + ",\n"
+                    + "Your order of \"" + myBook.getTitle() + "\" is scheduled to be delivered by " 
+                    + new SimpleDateFormat("EEE, dd MMM").format(po.getOrderDeliveryDate()) + ".\n"
+                    + "The total cost for your order is " + po.getQuantity()*myBook.getPrice();
+                
+                try {
+                    sendMail(po.getClientEmail(), "Bookstore order", message);
+                } catch (NamingException ex) {
+                    Logger.getLogger(Operations.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (MessagingException ex) {
+                    Logger.getLogger(Operations.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } 
+            else
+                return;
+        }
+        
+    }
     /**
      * Places a new order on the system
      * @param title book title
@@ -125,7 +192,7 @@ public class Operations {
      * @param email client's email
      * @return true on successful order
      */
-    public Boolean placeOrder(int bookId, int quantity, String name, String address, String email) {
+    public Boolean placeOrder(int bookId, int quantity, String name, String address, String email, boolean boughtOnStore) {
         
         //Debug
         System.out.format("New order: "
@@ -146,8 +213,20 @@ public class Operations {
             sendWarehouse(warehouseOrder);
             // Create a new order and set its state as awaiting expedition.
             BookOrder newOrder = new BookOrder(bookId, quantity, name, address, email);
-            newOrder.setOrderState("WAITING");
             
+            newOrder.setOrderState(BookOrder.State.WAITING.toString());
+            if (!boughtOnStore) {
+                try {
+                    String message = "Hi " + name + ",\n"
+                            + "Your order of \"" + myBook.getTitle() + "\" is on back order."
+                            + "\nYou will inform you as soon as we can fulfill your order." 
+                            + "The total cost for your order is " + quantity*myBook.getPrice();
+                    sendMail(email, "Bookstore order", message);
+                } catch (Exception e) {
+                    System.out.print(e.getMessage());
+            }
+        }
+            persist(newOrder);
             return orders.add(newOrder);
          }       
         
@@ -157,23 +236,24 @@ public class Operations {
         
         //Create new order and set delivery date for tomorrow
         BookOrder newOrder = new BookOrder(bookId, quantity, name, address, email);
-        newOrder.setOrderState("DISPATCHED");
+        newOrder.setOrderState(BookOrder.State.DISPATCHED.toString());
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.DAY_OF_YEAR, 1);
         newOrder.setOrderDeliveryDate(cal.getTime());
         
-        //Compose message and send email to client
-        try {
-            String message = "Hi " + name + ",\n"
-                    + "Your order of \"" + myBook.getTitle() + "\" is scheduled to be delivered by " 
-                    + new SimpleDateFormat("EEE, dd MMM").format(newOrder.getOrderDeliveryDate()) + ".\n"
-                    + "The total cost for your order is " + quantity*myBook.getPrice();
-            sendMail(email, "Bookstore order", message);
-        } catch (Exception e) {
-            System.out.print(e.getMessage());
+        //Compose message and send email to client, if the order was placed online
+        if (!boughtOnStore) {
+            try {
+                String message = "Hi " + name + ",\n"
+                        + "Your order of \"" + myBook.getTitle() + "\" is scheduled to be delivered by " 
+                        + new SimpleDateFormat("EEE, dd MMM").format(newOrder.getOrderDeliveryDate()) + ".\n"
+                        + "The total cost for your order is " + quantity*myBook.getPrice();
+                sendMail(email, "Bookstore order", message);
+            } catch (Exception e) {
+                System.out.print(e.getMessage());
+            }
         }
-
         //TODO: print receipt
         
         //Add order to array and store it in the DB

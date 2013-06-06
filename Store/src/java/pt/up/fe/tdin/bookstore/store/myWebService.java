@@ -16,7 +16,7 @@ import pt.up.fe.tdin.bookstore.common.Book;
 
 /**
  *
- * @author Administrator
+ * @author Joao
  */
 @WebService(serviceName = "myWebService")
 @Stateless()
@@ -35,6 +35,11 @@ public class myWebService {
         return ejbRef.getBookList();
     }
 
+    @WebMethod(operationName = "getPendingOrders")
+    public List<BookOrder> getPendingOrders(@WebParam(name = "bookId") int bookId) {
+        return ejbRef.getPendingOrders(bookId);
+    }
+
     @WebMethod(operationName = "getBookStockLeft")
     public int getBookStockLeft(@WebParam(name = "id") int id) {
         return ejbRef.getBookStockLeft(id);
@@ -46,9 +51,15 @@ public class myWebService {
         ejbRef.setBookAvailability(id, availability);
     }
 
+    @WebMethod(operationName = "satisfyPendingOrders")
+    @Oneway
+    public void satisfyPendingOrders(@WebParam(name = "bookId") int bookId) {
+        ejbRef.satisfyPendingOrders(bookId);
+    }
+
     @WebMethod(operationName = "placeOrder")
-    public Boolean placeOrder(@WebParam(name = "bookId") int bookId, @WebParam(name = "quantity") int quantity, @WebParam(name = "name") String name, @WebParam(name = "address") String address, @WebParam(name = "email") String email) {
-        return ejbRef.placeOrder(bookId, quantity, name, address, email);
+    public Boolean placeOrder(@WebParam(name = "bookId") int bookId, @WebParam(name = "quantity") int quantity, @WebParam(name = "name") String name, @WebParam(name = "address") String address, @WebParam(name = "email") String email, @WebParam(name = "boughtOnStore") boolean boughtOnStore) {
+        return ejbRef.placeOrder(bookId, quantity, name, address, email, boughtOnStore);
     }
 
     @WebMethod(operationName = "changeOrderState")

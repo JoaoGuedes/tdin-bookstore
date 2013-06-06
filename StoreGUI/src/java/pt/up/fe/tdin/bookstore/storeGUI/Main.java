@@ -37,7 +37,8 @@ public class Main extends java.awt.Frame {
                 if (column == STOCK) {
                     int id = bookList.get(row).getId();
                     MyWebService port = service.getMyWebServicePort();
-                    port.setBookAvailability(id, Integer.parseInt((String) model.getValueAt(row, column)));
+                    port.setBookAvailability(id, Integer.parseInt((String) model.getValueAt(row, column))); 
+                    port.satisfyPendingOrders(id);
                 }
             }
         });
