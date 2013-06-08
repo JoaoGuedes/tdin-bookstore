@@ -21,7 +21,7 @@
     <target name="wsimport-client-myWebService" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/myWebService"/>
         <property name="wsdl-myWebService" location="${meta.inf}/xml-resources/web-service-references/myWebService/wsdl/localhost_8080/myWebService/myWebService.wsdl"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/myWebService" destdir="${build.generated.dir}/jax-wsCache/myWebService" wsdl="${wsdl-myWebService}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" wsdlLocation="http://localhost:8080/myWebService/myWebService?wsdl" xnocompile="true" xendorsed="true">
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/myWebService" destdir="${build.generated.dir}/jax-wsCache/myWebService" wsdl="${wsdl-myWebService}" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" wsdlLocation="http://localhost:8080/myWebService/myWebService?wsdl" xnocompile="true" xendorsed="true" package="pt.up.fe.tdin.bookstore.storeGUI">
             <depends file="${wsdl-myWebService}"/>
             <produces dir="${build.generated.dir}/jax-wsCache/myWebService"/>
         </wsimport>
@@ -33,7 +33,7 @@
     </target>
     <target name="wsimport-client-clean-myWebService" depends="-init-project">
         <delete dir="${build.generated.dir}/jax-wsCache/myWebService"/>
-        <delete dir="${build.generated.sources.dir}/jax-ws/pt/up/fe/tdin/bookstore/store"/>
+        <delete dir="${build.generated.sources.dir}/jax-ws/pt/up/fe/tdin/bookstore/storeGUI"/>
     </target>
     <target name="wsimport-client-generate" depends="wsimport-client-myWebService"/>
 </project>

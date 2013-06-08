@@ -14,12 +14,16 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.xml.ws.WebServiceRef;
+import pt.up.fe.tdin.bookstore.warehousegui.WarehouseOrder;
+import pt.up.fe.tdin.bookstore.warehousegui.WarehouseWebservice_Service;
 
 /**
  *
  * @author ctrler
  */
 public class Main extends javax.swing.JFrame {
+    @WebServiceRef(wsdlLocation = "META-INF/wsdl/localhost_8080/warehouseWebservice/warehouseWebservice.wsdl")
+    private static WarehouseWebservice_Service service_1;
     @WebServiceRef(wsdlLocation = "META-INF/wsdl/localhost_8080/warehouseWebservice/warehouseWebservice.wsdl")
     private static WarehouseWebservice_Service service;
     public static List<WarehouseOrder> orders;
@@ -126,7 +130,7 @@ public class Main extends javax.swing.JFrame {
         for (WarehouseOrder wo: orders) {
             Vector myRow = new Vector();
             myRow.add(wo.getOrderId());
-            myRow.add(wo.book.getTitle());
+            myRow.add(wo.getBook().getTitle());
             myRow.add(wo.getQuantity());
             data.add(myRow);
         }
@@ -183,11 +187,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 
-    private java.util.List<pt.up.fe.tdin.bookstore.warehousegui.WarehouseOrder> getOrderList() {
-        pt.up.fe.tdin.bookstore.warehousegui.WarehouseWebservice port = service.getWarehouseWebservicePort();
-        return port.getOrderList();
-    }
-
     private void rowClicked(int row){
         
         // Podia usar isto mas é mais facil ir buscar ao orders.
@@ -201,5 +200,9 @@ public class Main extends javax.swing.JFrame {
         port.completedOrder(wo.getOrderId());
         
     }
-    
+
+    private static java.util.List<pt.up.fe.tdin.bookstore.warehousegui.WarehouseOrder> getOrderList() {
+        pt.up.fe.tdin.bookstore.warehousegui.WarehouseWebservice port = service_1.getWarehouseWebservicePort();
+        return port.getOrderList();
+    }
 }

@@ -16,7 +16,7 @@ import pt.up.fe.tdin.bookstore.common.Book;
 
 /**
  *
- * @author Joao
+ * @author ctrler
  */
 @WebService(serviceName = "myWebService")
 @Stateless()
@@ -72,6 +72,12 @@ public class myWebService {
     @Oneway
     public void setOrderDeliveryDate(@WebParam(name = "id") int id, @WebParam(name = "date") Date date) {
         ejbRef.setOrderDeliveryDate(id, date);
+    }
+
+    @WebMethod(operationName = "warehouseOrderShipped")
+    @Oneway
+    public void warehouseOrderShipped(@WebParam(name = "bookId") int bookId, @WebParam(name = "qty") int qty) {
+        ejbRef.warehouseOrderShipped(bookId, qty);
     }
     
 }

@@ -37,7 +37,7 @@ public class warehouseWebservice {
 
     @WebMethod(operationName = "completedOrder")
     @Oneway
-    public void completedOrder(@WebParam(name = "orderId") int orderId) {
+    public void completedOrder(@WebParam(name = "orderId") long orderId) {
         ejbRef.completedOrder(orderId);
     }
     

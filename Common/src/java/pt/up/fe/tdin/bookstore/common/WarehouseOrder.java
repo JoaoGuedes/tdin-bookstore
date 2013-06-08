@@ -15,23 +15,31 @@ public class WarehouseOrder implements Serializable{
     private static int ORDERID=0;
     private static final long serialVersionUID = 143242L;
     
-    int orderId;
+    long orderId;
     Book book;
     int quantity;
 
     public WarehouseOrder(Book book, int quantity) {
-        this.orderId = ORDERID++;
+        this.orderId = -1;
         this.book = book;
         this.quantity = quantity;
     }
     
+    public WarehouseOrder(long id, Book book, int quantity) {
+        this.orderId = id;
+        this.book = book;
+        this.quantity = quantity;
+    }
+
+    public WarehouseOrder(){
+        
+    }
     
-    
-    public int getOrderId() {
+    public long getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(int orderId) {
+    public void setOrderId(long orderId) {
         this.orderId = orderId;
     }
 

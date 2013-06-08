@@ -4,10 +4,12 @@
  */
 package pt.up.fe.tdin.bookstore.store;
 
+import com.sun.xml.ws.api.tx.at.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +18,8 @@ import javax.annotation.Resource;
 import javax.ejb.Singleton;
 import javax.ejb.LocalBean;
 import javax.ejb.Startup;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.jms.ConnectionFactory;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
@@ -31,7 +35,11 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceUnit;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.transaction.UserTransaction;
 import pt.up.fe.tdin.bookstore.common.Book;
 import pt.up.fe.tdin.bookstore.common.WarehouseOrder;
 /**
@@ -93,7 +101,7 @@ public class Operations {
     /*
      * Returns order by id from order list
      */
-    private BookOrder getOrderById(int id) {
+    private BookOrder getOrderById(long id) {
         for (BookOrder bo: orders) {
             if (bo.getId() == id)
                 return bo;
@@ -266,13 +274,15 @@ public class Operations {
      * @param id    the id of the order
      * @param state changed state
      */
-    public void changeOrderState(int id, String state) {  
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void changeOrderState(long id, String state) {  
         BookOrder order = getOrderById(id);
         order.setOrderState(state);
         BookOrder dbOrder = em.find(BookOrder.class, order.getId());
-        em.getTransaction().begin();
+        //em.getTransaction().begin();
         dbOrder.setOrderState(state);
-        em.getTransaction().commit();
+        //em.getTransaction().commit();
+        //em.close();
 
     }
     
@@ -281,13 +291,16 @@ public class Operations {
      * @param id    the id of the order
      * @param date  date to be changed
      */
-    public void setOrderDeliveryDate(int id, Date date) {    
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void setOrderDeliveryDate(long id, Date date) {    
         BookOrder order = getOrderById(id);
         order.setOrderDeliveryDate(date);
         BookOrder dbOrder = em.find(BookOrder.class, order.getId());
-        em.getTransaction().begin();
+        
+        //em.getTransaction().begin();
         dbOrder.setOrderDeliveryDate(date);
-        em.getTransaction().commit();
+        //em.getTransaction().commit();
+        
     }
     
     /**
@@ -309,8 +322,7 @@ public class Operations {
             //message sent , it was all
             
             //show what we have done in this servlet
-            System.out.print("Servlet Sent: OrderID: "+ warehouseOrder.getOrderId()
-                    + " | Book: " + warehouseOrder.getBook().getTitle()
+            System.out.print("Servlet Sent: Book: " + warehouseOrder.getBook().getTitle()
                     + " | Quantity: " + warehouseOrder.getQuantity()
                     + " to this Queue: " + queue.getQueueName());
             
@@ -332,6 +344,54 @@ public class Operations {
      */
     private void persist(Object object) {
         em.persist(object);
+    }
+    
+    /**
+     * Signals the Store that an WarehouseOrder was shipped to the store.
+     * @param bookId the book that was shipped
+     * @param qty number of books shipped to the store.
+     */
+    public void warehouseOrderShipped(int bookId, int qty){
+          
+        // Gets all the orders for this book that are marked as Waiting
+        List<BookOrder> waitingOrders = getOrdersForBook(bookId, BookOrder.State.WAITING);
+        
+        int localQty = qty;
+        for(BookOrder bo : waitingOrders){
+            if(bo.getQuantity() <= localQty){
+                changeOrderState(bo.getId(), BookOrder.State.DISPATCHING.toString());
+                
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(new Date());
+                cal.add(Calendar.DAY_OF_YEAR, 2);
+                setOrderDeliveryDate(bo.getId(),cal.getTime());
+                
+                localQty -= bo.getQuantity();
+                
+                System.err.println("[Store.Operations.warehouseOrderShipped] updated order " + bo.getId() +  " qty: " + bo.getQuantity());
+            }
+            
+        }
+ 
+    }
+    
+    /**
+     * Gets the orders for a book that have a given state
+     * @param bookId
+     * @param state
+     * @return 
+     */
+    private List<BookOrder> getOrdersForBook(int bookId, BookOrder.State state){
+        
+        List<BookOrder> result = new ArrayList<BookOrder>();
+        
+        for(BookOrder bo : orders){
+            if(bo.getBookId()==bookId && bo.getState() == state){
+                result.add(bo);
+            }
+        }
+        
+        return result;
     }
 
 }

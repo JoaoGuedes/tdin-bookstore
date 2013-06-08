@@ -2,9 +2,17 @@
 
 <xs:element name="addOrder" type="tns:addOrder"/>
 
+<xs:element name="completedOrder" type="tns:completedOrder"/>
+
 <xs:element name="getOrderList" type="tns:getOrderList"/>
 
 <xs:element name="getOrderListResponse" type="tns:getOrderListResponse"/>
+
+<xs:complexType name="completedOrder">
+<xs:sequence>
+<xs:element name="orderId" type="xs:long"/>
+</xs:sequence>
+</xs:complexType>
 
 <xs:complexType name="getOrderList">
 <xs:sequence/>
@@ -19,7 +27,7 @@
 <xs:complexType name="warehouseOrder">
 <xs:sequence>
 <xs:element name="book" type="tns:book" minOccurs="0"/>
-<xs:element name="orderId" type="xs:int"/>
+<xs:element name="orderId" type="xs:long"/>
 <xs:element name="quantity" type="xs:int"/>
 </xs:sequence>
 </xs:complexType>

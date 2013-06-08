@@ -12,8 +12,7 @@ import java.io.Serializable;
  * @author joaoguedes
  */
 public class Book implements Serializable {
-        
-    private static int BOOKID=0;
+    
     private static final long serialVersionUID = 1112132213L;
     
     private int id;
@@ -31,6 +30,11 @@ public class Book implements Serializable {
         this.title = title;
         this.available = available;
         this.price = price;
+    }
+    
+    public Book(int id, String title){
+        this.id = id;
+        this.title = title;
     }
     
     public double getPrice() {
@@ -64,5 +68,29 @@ public class Book implements Serializable {
     public void setPrice(double price) {
         this.price = price;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 29 * hash + this.id;
+        hash = 29 * hash + (this.title != null ? this.title.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Book other = (Book) obj;
+        if (this.id != other.id) {
+            return false;
+        }
+        return true;
+    }
+    
     
 }

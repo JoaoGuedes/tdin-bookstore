@@ -5,7 +5,7 @@
     <client name="myWebService">
       <wsdl-url>http://localhost:8080/myWebService/myWebService?wsdl</wsdl-url>
       <local-wsdl-file>localhost_8080/myWebService/myWebService.wsdl</local-wsdl-file>
-      <package-name>pt.up.fe.tdin.bookstore.store</package-name>
+      <package-name forceReplace="true">pt.up.fe.tdin.bookstore.storeGUI</package-name>
       <catalog-file>catalog.xml</catalog-file>
       <wsimport-options>
         <wsimport-option>
@@ -27,6 +27,10 @@
         <wsimport-option>
           <wsimport-option-name>xendorsed</wsimport-option-name>
           <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>package</wsimport-option-name>
+          <wsimport-option-value>pt.up.fe.tdin.bookstore.storeGUI</wsimport-option-value>
         </wsimport-option>
       </wsimport-options>
     </client>

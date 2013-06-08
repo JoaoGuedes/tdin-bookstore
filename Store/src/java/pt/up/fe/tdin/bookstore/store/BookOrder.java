@@ -19,7 +19,7 @@ import javax.persistence.TemporalType;
  */
 @Entity
 public class BookOrder implements Serializable {
-    
+
     public static enum State { WAITING, DISPATCHING, DISPATCHED; }
     
     private static final long serialVersionUID = 1L;
@@ -55,6 +55,7 @@ public class BookOrder implements Serializable {
     public String getClientEmail() { return clientEmail; }
     public String getOrderState() { return orderState.toString(); }
     public Date getOrderDeliveryDate() { return delivery; }
+    public State getState() { return this.orderState; }
     
     public void setId(long id) { this.id = id; }
     public void setBookId(int bookId) { this.bookId = bookId; }
@@ -64,6 +65,7 @@ public class BookOrder implements Serializable {
     public void setClientEmail(String email) { clientEmail = email; }
     public void setOrderState(String state) { this.orderState = State.valueOf(state); }
     public void setOrderDeliveryDate(Date date) { this.delivery = date; }
+    public void setState(State state){ this.orderState = state;}
 
     @Override
     public int hashCode() {
