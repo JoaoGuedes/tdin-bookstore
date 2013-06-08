@@ -28,3 +28,9 @@ nbactions.xml
 nb-configuration.xml
 /StoreGUI/nbproject/private/
 /WarehouseGUI/nbproject/private/
+
+# base de dados
+/BookstoreDB/seg0/
+/BookstoreDB/log/
+/BookstoreDB/db.lck
+/Console/nbproject/private/

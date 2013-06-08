@@ -1,0 +1,174 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Metro/2.2.0-1 (tags/2.2.0u1-7139; 2012-06-02T10:55:19+0000) JAXWS-RI/2.2.6-2 JAXWS/2.2 svn-revision#unknown. --><xs:schema xmlns:tns="http://store.bookstore.tdin.fe.up.pt/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://store.bookstore.tdin.fe.up.pt/">
+
+<xs:element name="changeOrderState" type="tns:changeOrderState"/>
+
+<xs:element name="getBook" type="tns:getBook"/>
+
+<xs:element name="getBookList" type="tns:getBookList"/>
+
+<xs:element name="getBookListResponse" type="tns:getBookListResponse"/>
+
+<xs:element name="getBookResponse" type="tns:getBookResponse"/>
+
+<xs:element name="getBookStockLeft" type="tns:getBookStockLeft"/>
+
+<xs:element name="getBookStockLeftResponse" type="tns:getBookStockLeftResponse"/>
+
+<xs:element name="getPendingOrders" type="tns:getPendingOrders"/>
+
+<xs:element name="getPendingOrdersResponse" type="tns:getPendingOrdersResponse"/>
+
+<xs:element name="getReceipt" type="tns:getReceipt"/>
+
+<xs:element name="getReceiptResponse" type="tns:getReceiptResponse"/>
+
+<xs:element name="placeOrder" type="tns:placeOrder"/>
+
+<xs:element name="placeOrderResponse" type="tns:placeOrderResponse"/>
+
+<xs:element name="satisfyPendingOrders" type="tns:satisfyPendingOrders"/>
+
+<xs:element name="setBookAvailability" type="tns:setBookAvailability"/>
+
+<xs:element name="setOrderDeliveryDate" type="tns:setOrderDeliveryDate"/>
+
+<xs:element name="warehouseOrderShipped" type="tns:warehouseOrderShipped"/>
+
+<xs:complexType name="getReceipt">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="getReceiptResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="setBookAvailability">
+<xs:sequence>
+<xs:element name="id" type="xs:int"/>
+<xs:element name="availability" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="setOrderDeliveryDate">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="date" type="xs:dateTime" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getBook">
+<xs:sequence>
+<xs:element name="id" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getBookResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:book" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="book">
+<xs:sequence>
+<xs:element name="availability" type="xs:int"/>
+<xs:element name="id" type="xs:int"/>
+<xs:element name="price" type="xs:double"/>
+<xs:element name="title" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getPendingOrders">
+<xs:sequence>
+<xs:element name="bookId" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getPendingOrdersResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:bookOrder" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="bookOrder">
+<xs:sequence>
+<xs:element name="bookId" type="xs:int"/>
+<xs:element name="clientAddress" type="xs:string" minOccurs="0"/>
+<xs:element name="clientEmail" type="xs:string" minOccurs="0"/>
+<xs:element name="clientName" type="xs:string" minOccurs="0"/>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="orderDeliveryDate" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="orderState" type="xs:string" minOccurs="0"/>
+<xs:element name="quantity" type="xs:int"/>
+<xs:element name="state" type="tns:state" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getBookList">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="getBookListResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:book" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="placeOrder">
+<xs:sequence>
+<xs:element name="bookId" type="xs:int"/>
+<xs:element name="quantity" type="xs:int"/>
+<xs:element name="name" type="xs:string" minOccurs="0"/>
+<xs:element name="address" type="xs:string" minOccurs="0"/>
+<xs:element name="email" type="xs:string" minOccurs="0"/>
+<xs:element name="boughtOnStore" type="xs:boolean"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="placeOrderResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:boolean" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="satisfyPendingOrders">
+<xs:sequence>
+<xs:element name="bookId" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getBookStockLeft">
+<xs:sequence>
+<xs:element name="id" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getBookStockLeftResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="changeOrderState">
+<xs:sequence>
+<xs:element name="id" type="xs:long"/>
+<xs:element name="state" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="warehouseOrderShipped">
+<xs:sequence>
+<xs:element name="bookId" type="xs:int"/>
+<xs:element name="qty" type="xs:int"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="state">
+<xs:restriction base="xs:string">
+<xs:enumeration value="WAITING"/>
+<xs:enumeration value="DISPATCHING"/>
+<xs:enumeration value="DISPATCHED"/>
+</xs:restriction>
+</xs:simpleType>
+</xs:schema>

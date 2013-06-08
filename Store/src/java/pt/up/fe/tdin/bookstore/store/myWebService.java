@@ -64,13 +64,13 @@ public class myWebService {
 
     @WebMethod(operationName = "changeOrderState")
     @Oneway
-    public void changeOrderState(@WebParam(name = "id") int id, @WebParam(name = "state") String state) {
+    public void changeOrderState(@WebParam(name = "id") long id, @WebParam(name = "state") String state) {
         ejbRef.changeOrderState(id, state);
     }
 
     @WebMethod(operationName = "setOrderDeliveryDate")
     @Oneway
-    public void setOrderDeliveryDate(@WebParam(name = "id") int id, @WebParam(name = "date") Date date) {
+    public void setOrderDeliveryDate(@WebParam(name = "id") long id, @WebParam(name = "date") Date date) {
         ejbRef.setOrderDeliveryDate(id, date);
     }
 
@@ -78,6 +78,11 @@ public class myWebService {
     @Oneway
     public void warehouseOrderShipped(@WebParam(name = "bookId") int bookId, @WebParam(name = "qty") int qty) {
         ejbRef.warehouseOrderShipped(bookId, qty);
+    }
+
+    @WebMethod(operationName = "getReceipt")
+    public String getReceipt() {
+        return ejbRef.getReceipt();
     }
     
 }

@@ -57,6 +57,9 @@ public class Operations {
     private void postConstruct() {
         orders = new ArrayList();
         bookList = new ArrayList();
+        receipts = new LinkedList<String>();
+        
+        
         TypedQuery<BookOrder> query = em.createQuery("SELECT b FROM BookOrder b", BookOrder.class);
         orders = query.getResultList();
 
@@ -69,7 +72,11 @@ public class Operations {
      * List of placed orders and available books
      */
     private List<BookOrder> orders;
-        private List<Book> bookList;
+    private List<Book> bookList;
+    
+    /** Queue where the receipts are stored
+     */
+    java.util.Queue<String> receipts;
     
     @PersistenceContext(unitName = "StorePU")
     private EntityManager em;
@@ -262,7 +269,21 @@ public class Operations {
                 System.out.print(e.getMessage());
             }
         }
-        //TODO: print receipt
+        else{ // It was bought on store. Lets print a receipt
+            newOrder.setOrderDeliveryDate(new Date()); // Delivery is now
+            
+            String receipt = "Receipt for purchase" + 
+                             "\nBook: " + myBook.getTitle() + 
+                             "\nUnit Price: " + myBook.getPrice() + " €" +
+                             "\nQuantity: " + quantity +
+                             "\nTotal: " + quantity*myBook.getPrice() +
+                             "\n.................." + 
+                             "\nCustomer: " + name +
+                             "\nDate: " + new SimpleDateFormat("EEE, dd MMM").format(newOrder.getOrderDeliveryDate()) +
+                             "\n#################\n";
+            receipts.add(receipt);
+        }
+        
         
         //Add order to array and store it in the DB
         persist(newOrder);
@@ -392,6 +413,15 @@ public class Operations {
         }
         
         return result;
+    }
+    
+    /** Returns a receipts (the first in the queue) *
+     * To be used by the console app.
+     * @return 
+     */
+    public String getReceipt(){
+        
+        return receipts.poll();
     }
 
 }
