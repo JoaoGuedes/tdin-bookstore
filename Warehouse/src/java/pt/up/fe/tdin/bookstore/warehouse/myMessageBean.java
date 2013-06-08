@@ -46,9 +46,9 @@ public class myMessageBean implements MessageListener {
         }
         if(receivedOrder!=null){
             warehouseOperations.addOrder(receivedOrder);
-            System.out.print("WarehouseQUEUE: Book:" + receivedOrder.getBook().getTitle() + " | Qty: " + receivedOrder.getQuantity());
+            System.out.print("WarehouseQUEUE: Received Book:" + receivedOrder.getBook().getTitle() + " | Qty: " + receivedOrder.getQuantity());
         }
         else
-            System.err.println("WarehouseQUEUE: Shit has hit the fan.");
+            System.err.println("WarehouseQUEUE: Error processing message.");
     }
 }

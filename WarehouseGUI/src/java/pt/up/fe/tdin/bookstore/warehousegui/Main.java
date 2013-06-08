@@ -144,7 +144,7 @@ public class Main extends javax.swing.JFrame {
         DefaultTableModel tbm = (DefaultTableModel) jTable1.getModel();
         tbm.setDataVector(data, columnNames);
         tbm.fireTableDataChanged();
-        System.out.print("Aqui vai!");
+        System.out.println("Orders Refreshed");
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -188,16 +188,14 @@ public class Main extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void rowClicked(int row){
-        
-        // Podia usar isto mas é mais facil ir buscar ao orders.
-        //int id = (Integer) jTable1.getModel().getValueAt(row, 0);
-        //String book = (String) jTable1.getModel().getValueAt(row, 1);
-      
+           
         WarehouseOrder wo = orders.get(row);
-        System.out.println("Clickaste no pedido " +  wo.getOrderId() + " do livro " + wo.getBook().getTitle());
+        System.out.println("Order completed: " +  wo.getOrderId() + " Book: " + wo.getBook().getTitle());
         
         pt.up.fe.tdin.bookstore.warehousegui.WarehouseWebservice port = service.getWarehouseWebservicePort();
         port.completedOrder(wo.getOrderId());
+        
+        this.jButton1ActionPerformed(null);
         
     }
 
