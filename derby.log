@@ -1,1 +1,11 @@
-2013-06-08 12:11:43.352 GMT : Apache Derby Network Server - 10.5.3.0 - (802917) started and ready to accept connections on port 1527
+2013-06-12 09:50:58.627 GMT : Apache Derby Network Server - 10.5.3.0 - (802917) started and ready to accept connections on port 1527
+----------------------------------------------------------------
+2013-06-12 09:51:27.973 GMT:
+ Booting Derby version The Apache Software Foundation - Apache Derby - 10.5.3.0 - (802917): instance a816c00e-013f-37cb-9d39-000069942c5f
+on database directory C:\Users\ctrler\Documents\Faculdade\TDIN\bookstore\BookstoreDB  
+
+Database Class Loader started - derby.database.classpath=''
+
+2013-06-12 10:56:19.249 GMT:
+Shutting down instance a816c00e-013f-37cb-9d39-000069942c5f
+----------------------------------------------------------------

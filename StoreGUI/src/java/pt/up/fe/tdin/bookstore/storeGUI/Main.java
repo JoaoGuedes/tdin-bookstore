@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Vector;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 import javax.xml.ws.WebServiceRef;
@@ -117,7 +118,27 @@ public class Main extends java.awt.Frame {
     }//GEN-LAST:event_exitForm
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        initComponents();
+        //initComponents();
+        
+       bookList = getBookList();
+
+        Vector columnNames = new Vector();
+        columnNames.add("Title");
+        columnNames.add("Unit price");
+        columnNames.add("Stock");
+
+        Vector data = new Vector();
+        for (Book b: bookList) {
+            Vector myRow = new Vector();
+            myRow.add(b.getTitle());
+            myRow.add(b.getPrice());
+            myRow.add(b.getAvailability());
+            data.add(myRow);
+        }
+        
+        DefaultTableModel tbm = (DefaultTableModel) jTable1.getModel();
+        tbm.setDataVector(data, columnNames);
+        tbm.fireTableDataChanged();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

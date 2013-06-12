@@ -65,10 +65,7 @@ public class Main extends javax.swing.JFrame {
         }
         jTable1 = new javax.swing.JTable(data, columnNames) {
             public boolean isCellEditable(int row,int column){
-                if (column != 2)
                 return false;
-
-                return true;
             }
         };
 

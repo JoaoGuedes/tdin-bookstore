@@ -6,7 +6,6 @@ package pt.up.fe.tdin.bookstore.storeGUI;
 
 import javax.swing.JOptionPane;
 import javax.xml.ws.WebServiceRef;
-import pt.up.fe.tdin.bookstore.store.*;
 
 /**
  *
